@@ -105,12 +105,20 @@ export default function ReservationClient() {
 
     formData.append("proofImage", proof);
 
-    await fetch("http://localhost:8080/reservations", {
-      method: "POST",
-      body: formData
-    });
+   const res = await fetch("http://localhost:8080/reservations", {
+  method: "POST",
+  body: formData
+});
 
-    alert("Réservation envoyée ✅");
+if (!res.ok) {
+  const message = await res.text();
+  alert("Toutes les chambres sont déjà réservées pour ces dates");
+  return;
+}
+
+alert("Réservation envoyée ✅");
+
+    
   };
 
   if (!room)

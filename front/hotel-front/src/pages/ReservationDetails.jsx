@@ -31,14 +31,22 @@ useEffect(() => {
 
 }, [id]);
 
-  const updateStatus = async (status) => {
-    await fetch(
-      `http://localhost:8080/reservations/${id}/status?status=${status}`,
-      { method: "PUT" }
-    );
+const updateStatus = async (status) => {
+  const endpoint =
+    status === "CONFIRMED"
+      ? "confirm"
+      : "cancel";
 
-    setReservation({ ...reservation, status });
-  };
+  const res = await fetch(
+    `http://localhost:8080/reservations/${id}/${endpoint}`,
+    {
+      method: "PUT"
+    }
+  );
+
+  const data = await res.json();
+  setReservation(data);
+};
 
   if (!reservation)
     return <div className="p-6 text-center">Chargement...</div>;
@@ -121,23 +129,39 @@ useEffect(() => {
         )}
 
         {/* ACTIONS */}
-        <div className="p-6 border-t flex justify-end gap-3">
+  {/* ACTIONS */}
+<div className="p-6 border-t flex justify-end gap-3">
 
-          <button
-            onClick={() => updateStatus("CONFIRMED")}
-            className="px-5 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition"
-          >
-            ✔ Valider
-          </button>
+  {/* Si PENDING → afficher les 2 */}
+  {reservation.status === "PENDING" && (
+    <>
+      <button
+        onClick={() => updateStatus("CONFIRMED")}
+        className="px-5 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition"
+      >
+        ✔ Valider
+      </button>
 
-          <button
-            onClick={() => updateStatus("REJECTED")}
-            className="px-5 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
-          >
-            ✖ Rejeter
-          </button>
+      <button
+        onClick={() => updateStatus("CANCELLED")}
+        className="px-5 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+      >
+        ✖ Rejeter
+      </button>
+    </>
+  )}
 
-        </div>
+  {/* Si CANCELLED → seulement valider */}
+  {reservation.status === "CANCELLED" && (
+    <button
+      onClick={() => updateStatus("CONFIRMED")}
+      className="px-5 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition"
+    >
+      ✔ Revalider
+    </button>
+  )}
+
+</div>
 
       </div>
     </div>

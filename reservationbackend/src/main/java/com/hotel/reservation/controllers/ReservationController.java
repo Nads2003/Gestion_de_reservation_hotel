@@ -15,7 +15,7 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
-//make a reservation
+//create a reservation
     @PostMapping
     public Reservation create(
             @ModelAttribute ReservationRequest request
@@ -36,5 +36,15 @@ public class ReservationController {
     @GetMapping("/user/{userId}")
     public List<ReservationHistoryDto> getByUser(@PathVariable Long userId) {
         return reservationService.getReservationsByUser(userId);
+    }
+    //confirm reservation
+    @PutMapping("/{id}/confirm")
+    public Reservation confirm(@PathVariable Long id) {
+        return reservationService.confirmReservation(id);
+    }
+// cancel reservation
+    @PutMapping("/{id}/cancel")
+    public Reservation cancel(@PathVariable Long id) {
+        return reservationService.cancelReservation(id);
     }
 }

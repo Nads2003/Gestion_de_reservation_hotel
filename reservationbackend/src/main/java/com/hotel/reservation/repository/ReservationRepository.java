@@ -22,4 +22,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
         AND r.endDate >= :today
     """)
     long countOccupiedRooms(Long roomId, LocalDate today);
+    long countByRoomIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+            Long roomId,
+            LocalDate endDate,
+            LocalDate startDate
+    );
 }

@@ -31,6 +31,19 @@ public class ReservationService {
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new RuntimeException("Room introuvable"));
 
+        long occupied = reservationRepository
+                .countByRoomIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+                        room.getId(),
+                        request.getEndDate(),
+                        request.getStartDate()
+                );
+
+        if (occupied >= room.getAvailableRooms()) {
+            throw new RuntimeException(
+                    "Toutes les chambres sont déjà réservées pour ces dates"
+            );
+        }
+
         long days = ChronoUnit.DAYS.between(
                 request.getStartDate(),
                 request.getEndDate()
@@ -53,19 +66,9 @@ public class ReservationService {
         Payment payment = new Payment();
 
         payment.setPaymentMethod(request.getPaymentMethod());
-
-        // IMAGE
-        payment.setProofName(
-                request.getProofImage().getOriginalFilename()
-        );
-
-        payment.setProofType(
-                request.getProofImage().getContentType()
-        );
-
-        payment.setProofImage(
-                request.getProofImage().getBytes()
-        );
+        payment.setProofName(request.getProofImage().getOriginalFilename());
+        payment.setProofType(request.getProofImage().getContentType());
+        payment.setProofImage(request.getProofImage().getBytes());
 
         payment.setReservation(savedReservation);
 
@@ -111,5 +114,21 @@ public class ReservationService {
                                 : null
                 ))
                 .toList();
+    }
+    public Reservation confirmReservation(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Réservation introuvable"));
+
+        reservation.setStatus(ReservationStatus.CONFIRMED);
+
+        return reservationRepository.save(reservation);
+    }
+    public Reservation cancelReservation(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Réservation introuvable"));
+
+        reservation.setStatus(ReservationStatus.CANCELLED);
+
+        return reservationRepository.save(reservation);
     }
 }
