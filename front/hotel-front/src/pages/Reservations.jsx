@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 export default function Reservations() {
-
-  const [reservations, setReservations] = useState([]);
+// STATES
+const [reservations, setReservations] = useState([]);
+const [search, setSearch] = useState("");
 const navigate = useNavigate();
   useEffect(() => {
     fetch("http://localhost:8080/reservations")
@@ -10,12 +11,31 @@ const navigate = useNavigate();
       .then(data => setReservations(data));
   }, []);
 
+  const filteredReservations = reservations.filter(r => {
+  const client = (r.user?.name ?? "").toLowerCase();
+  const type = (r.room?.type ?? "").toLowerCase();
+  const value = search.toLowerCase();
+
+  return client.includes(value) || type.includes(value);
+});
   return (
     <div className="p-6">
 
-      <h1 className="text-2xl font-bold mb-6">
-        Réservations
-      </h1>
+      <div className="flex gap-3 items-center mb-6">
+
+  <h1 className="text-2xl font-bold">
+    Réservations
+  </h1>
+
+  <input
+    type="text"
+    placeholder="🔍 Client ou type chambre..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="border p-2 rounded-lg w-64"
+  />
+
+</div>
 
       <div className="bg-white rounded-xl shadow overflow-hidden">
 
@@ -36,7 +56,7 @@ const navigate = useNavigate();
 
           <tbody>
 
-            {reservations.map((r) => (
+            {filteredReservations.map((r) => (
 
               <tr key={r.id} className="border-b hover:bg-gray-50">
 

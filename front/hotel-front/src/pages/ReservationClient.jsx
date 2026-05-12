@@ -134,7 +134,7 @@ export default function ReservationClient() {
           />
 
           <div className="absolute top-4 left-4 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg">
-            {room.price} Ar / nuit
+            {room.price.toLocaleString("fr-FR")} Ar / nuit
           </div>
 
         </div>
@@ -255,7 +255,7 @@ export default function ReservationClient() {
               </span>
 
               <span className="font-semibold">
-                {room.price} Ar
+                {room.price.toLocaleString("fr-FR")} Ar
               </span>
             </div>
 
@@ -285,7 +285,7 @@ export default function ReservationClient() {
               <span>Total</span>
 
               <span className="text-blue-600">
-                {total} Ar
+                 {total.toLocaleString("fr-FR")} Ar
               </span>
             </div>
 

@@ -10,10 +10,24 @@ const [dark, setDark] = useState(() => {
   return localStorage.getItem("theme") === "dark";
 });
   const user = JSON.parse(localStorage.getItem("user"));
-  const logout = () => {
-  localStorage.removeItem("user");
-  navigate("/");
-  window.location.reload();
+ const logout = () => {
+
+  const confirmLogout = window.confirm(
+    "Voulez-vous vraiment vous déconnecter ?"
+  );
+
+  if (confirmLogout) {
+
+    localStorage.removeItem("user");
+
+    // supprimer redirect aussi
+    localStorage.removeItem("redirect");
+
+    navigate("/");
+    window.location.reload();
+
+  }
+
 };
 useEffect(() => {
   if (dark) {

@@ -12,7 +12,7 @@ public class RoomRequest {
     private String description;
     private double price;
     private int capacity;
-
+    private int availableRooms;
     private Long hotelId;
 
     private List<MultipartFile> images;

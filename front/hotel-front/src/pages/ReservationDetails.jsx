@@ -5,11 +5,31 @@ export default function ReservationDetails() {
   const { id } = useParams();
   const [reservation, setReservation] = useState(null);
 
-  useEffect(() => {
-    fetch(`http://localhost:8080/reservations/${id}`)
-      .then((res) => res.json())
-      .then((data) => setReservation(data));
-  }, [id]);
+useEffect(() => {
+
+  fetch(`http://localhost:8080/reservations/${id}`)
+    .then((res) => res.json())
+    .then((data) => {
+
+      console.log("RESERVATION =", data);
+
+      console.log("PAYMENT =", data.payment);
+
+      console.log(
+        "PAYMENT METHOD =",
+        data.payment?.paymentMethod
+      );
+
+      console.log(
+        "PAYMENT ID =",
+        data.payment?.id
+      );
+
+      setReservation(data);
+
+    });
+
+}, [id]);
 
   const updateStatus = async (status) => {
     await fetch(
@@ -38,7 +58,7 @@ export default function ReservationDetails() {
         {/* HEADER FACTURE */}
         <div className="bg-blue-900 text-white p-6 flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold">FACTURE DE RÉSERVATION</h1>
+            <h1 className="text-2xl font-bold">DETAILS DE RÉSERVATION</h1>
             <p className="text-sm opacity-80">ID #{reservation.id}</p>
           </div>
 
@@ -93,10 +113,10 @@ export default function ReservationDetails() {
             </h2>
 
             <img
-              src={`http://localhost:8080/payments/proof/${reservation.payment.id}`}
-              alt="preuve"
-              className="w-full max-w-md rounded-xl border shadow"
-            />
+  src={`data:${reservation.payment.proofType};base64,${reservation.payment.proofImage}`}
+  alt="preuve"
+  className="w-full max-w-md rounded-xl border shadow"
+/>
           </div>
         )}
 

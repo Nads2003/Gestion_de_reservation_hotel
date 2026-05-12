@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/rooms")
@@ -40,7 +41,7 @@ public class RoomController {
         return roomRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Room introuvable"));
     }
-
+//get image with id user
     @GetMapping("/image/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
 
@@ -55,7 +56,26 @@ public class RoomController {
     // 🔥 DELETE ROOM
     @DeleteMapping("/{id}")
     public String deleteRoom(@PathVariable Long id) {
-        roomRepository.deleteById(id);
-        return "Room supprimée";
+        roomService.deleteRoom(id);
+        return "Room supprimée avec succès";
+    }
+    //update room
+    @PutMapping("/{id}")
+    public Room updateRoom(@PathVariable Long id, @RequestBody Room room) {
+        Room existing = roomRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Room introuvable"));
+
+        existing.setType(room.getType());
+        existing.setDescription(room.getDescription());
+        existing.setPrice(room.getPrice());
+        existing.setCapacity(room.getCapacity());
+        existing.setAvailableRooms(room.getAvailableRooms());
+
+        return roomRepository.save(existing);
+    }
+    //disponibility
+    @GetMapping("/{id}/availability")
+    public Map<String, Long> getAvailability(@PathVariable Long id) {
+        return roomService.getAvailability(id);
     }
 }

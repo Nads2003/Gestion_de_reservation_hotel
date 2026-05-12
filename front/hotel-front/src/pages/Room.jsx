@@ -3,27 +3,43 @@ import { FaChevronLeft, FaChevronRight, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function Rooms() {
+  // NAVIGATE
   const navigate = useNavigate();
+  // STATES
   const [rooms, setRooms] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
   const [currentIndex, setCurrentIndex] = useState({});
-
+// LOAD ROOMS
   useEffect(() => {
-    fetch("http://localhost:8080/rooms")
-      .then(res => res.json())
-      .then(data => {
+  const keyword = search.toLowerCase();
 
-        setRooms(data);
-        setFiltered(data);
+  const result = rooms.filter(room => {
+    const type = room.type?.toLowerCase() || "";
+    const desc = room.description?.toLowerCase() || "";
+    const price = room.price?.toString() || "";
 
-        const indexObj = {};
-        data.forEach(r => indexObj[r.id] = 0);
-        setCurrentIndex(indexObj);
+    return (
+      type.includes(keyword) ||
+      desc.includes(keyword) ||
+      price.includes(keyword)
+    );
+  });
 
-      });
-  }, []);
+  setFiltered(result);
+}, [search, rooms]);
+useEffect(() => {
+  fetch("http://localhost:8080/rooms")
+    .then(res => res.json())
+    .then(data => {
+      setRooms(data);
+      setFiltered(data);
 
+      const indexObj = {};
+      data.forEach(r => indexObj[r.id] = 0);
+      setCurrentIndex(indexObj);
+    });
+}, []);
   // SEARCH FILTER
   useEffect(() => {
     const result = rooms.filter(room =>
@@ -32,14 +48,14 @@ export default function Rooms() {
     );
     setFiltered(result);
   }, [search, rooms]);
-
+// CAROUSEL
   const nextImage = (roomId, length) => {
     setCurrentIndex(prev => ({
       ...prev,
       [roomId]: (prev[roomId] + 1) % length
     }));
   };
-
+// CAROUSEL
   const prevImage = (roomId, length) => {
     setCurrentIndex(prev => ({
       ...prev,
@@ -103,9 +119,10 @@ export default function Rooms() {
 
                   {room.images?.length > 0 ? (
                     <img
-                      src={`http://localhost:8080/rooms/image/${room.images[index].id}`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                    />
+  onClick={() => navigate(`/room/${room.id}`)}
+  src={`http://localhost:8080/rooms/image/${room.images[index].id}`}
+  className="w-full h-full object-cover cursor-pointer"
+/>
                   ) : (
                     <div className="flex items-center justify-center h-full bg-gray-200">
                       No image
@@ -114,7 +131,7 @@ export default function Rooms() {
 
                   {/* BADGES */}
                   <div className="absolute top-3 left-3 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
-                    {room.price} Ar
+                    {room.price.toLocaleString("fr-FR")} Ar
                   </div>
 
                   <div className="absolute top-3 right-3 bg-white/80 px-3 py-1 rounded-full text-sm">
@@ -163,7 +180,7 @@ export default function Rooms() {
   {/* DETAILS */}
   <div className="flex justify-between items-center mt-3 text-sm">
     <p className="text-gray-700 font-semibold">
-      💰 {room.price} Ar / nuit
+      💰 {room.price.toLocaleString("fr-FR")} Ar / nuit
     </p>
 
     <p className="text-gray-600">

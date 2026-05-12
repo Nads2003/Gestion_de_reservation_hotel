@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 
 export default function Users() {
+  // STATES
   const [users, setUsers] = useState([]);
-
+  const [search, setSearch] = useState("");
+// load users
   useEffect(() => {
     fetch("http://localhost:8080/users")
       .then((res) => res.json())
@@ -19,6 +21,13 @@ export default function Users() {
       <h1 className="text-3xl font-bold mb-6 text-gray-800">
         Gestion des utilisateurs
       </h1>
+      <input
+  type="text"
+  placeholder="🔍 Rechercher par nom..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="border p-2 rounded-lg mb-4 w-72"
+/>
 
       <div className="bg-white shadow-lg rounded-xl overflow-hidden">
         <table className="w-full text-left">
@@ -32,7 +41,11 @@ export default function Users() {
           </thead>
 
           <tbody>
-            {users.map((u) => (
+            {users
+  .filter(u =>
+    u.name?.toLowerCase().includes(search.toLowerCase())
+  )
+  .map((u) => (
               <tr
                 key={u.id}
                 className="border-b hover:bg-gray-50 transition"

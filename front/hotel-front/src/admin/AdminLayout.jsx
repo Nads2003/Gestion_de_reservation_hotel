@@ -31,9 +31,9 @@ export default function AdminLayout() {
 
         <div>
 
-          <h1 className="text-2xl font-bold mb-10 tracking-wide">
-            Admin Panel
-          </h1>
+          <h3 className="text-2xl font-bold mb-10 tracking-wide">
+           <span>🏨</span>Page admin
+          </h3>
 
           <nav className="space-y-3">
 

@@ -4,6 +4,8 @@ import ReservationClient from "./pages/ReservationClient";
 import Home from "./pages/Home";
 import Rooms from "./pages/Room";
 import About from "./pages/About";
+import Historique from "./pages/Historique";
+import RoomDetails from "./pages/RoomDetails";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -29,11 +31,21 @@ const PrivateRoute = ({ children }) => {
         <Route path="/" element={<Home />} />
         <Route path="/chambres" element={<Rooms />} />
         <Route path="/apropos" element={<About />} />
+        <Route path="/historique" element={<Historique />} />
+
         <Route
   path="/reservation/:id"
   element={
     <PrivateRoute>
       <ReservationClient />
+    </PrivateRoute>
+  }
+/>
+      <Route
+  path="/room/:id"
+  element={
+    <PrivateRoute>
+      <RoomDetails />
     </PrivateRoute>
   }
 />

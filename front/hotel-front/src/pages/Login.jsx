@@ -15,28 +15,56 @@ export default function Login() {
   };
 
 const handleLogin = async () => {
+
   try {
+
     const res = await loginUser(form);
 
     const user = res.data;
 
     // stocker user
     localStorage.setItem("user", JSON.stringify(user));
+
+    // récupérer redirect
     const redirect = localStorage.getItem("redirect");
+
     alert("Connexion réussie 🎉");
 
-    // REDIRECTION SELON ROLE
+    // ADMIN
     if (user.role === "ADMIN") {
+
+      localStorage.removeItem("redirect");
+
       navigate("/admin");
       window.location.reload();
+
     } else {
-      navigate(redirect || "/");
+
+      // si redirect existe → reservation
+      if (redirect) {
+
+        navigate(redirect);
+
+        // supprimer redirect après utilisation
+        localStorage.removeItem("redirect");
+
+      } else {
+
+        // connexion normale
+        navigate("/");
+
+      }
+
       window.location.reload();
+
     }
 
   } catch (err) {
+
     alert("Email ou mot de passe incorrect");
+
   }
+
 };
 
   return (

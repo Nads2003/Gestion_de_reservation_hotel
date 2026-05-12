@@ -28,6 +28,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/**").permitAll()
                         .requestMatchers("/rooms/**").permitAll()
                         .requestMatchers("/reservations/**").permitAll()
+                        .requestMatchers("/dashboard/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

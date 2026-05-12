@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-
+//register of clients
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequest request) {
         authService.register(request);
         return "User registered successfully";
     }
+    //login
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         return authService.login(request);

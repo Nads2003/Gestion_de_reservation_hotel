@@ -1,10 +1,13 @@
 package com.hotel.reservation.services;
 
+import com.hotel.reservation.dto.ReservationHistoryDto;
 import com.hotel.reservation.dto.ReservationRequest;
 import com.hotel.reservation.entites.*;
 import com.hotel.reservation.repository.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -79,5 +82,34 @@ public class ReservationService {
     public Reservation getById(Long id) {
         return reservationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reservation not found"));
+    }
+    @Transactional(readOnly = true)
+    public List<ReservationHistoryDto> getReservationsByUser(Long userId) {
+
+        List<Reservation> reservations = reservationRepository.findByUserId(userId);
+
+        return reservations.stream()
+                .map(r -> new ReservationHistoryDto(
+                        r.getId(),
+                        r.getRoom().getType(),
+                        r.getRoom().getDescription(),
+                        r.getStartDate(),
+                        r.getEndDate(),
+                        r.getTotalPrice(),
+                        r.getStatus(),
+
+                        r.getPayment() != null
+                                ? r.getPayment().getPaymentMethod()
+                                : null,
+
+                        r.getPayment() != null
+                                ? r.getPayment().getProofType()
+                                : null,
+
+                        r.getPayment() != null
+                                ? r.getPayment().getProofImage()
+                                : null
+                ))
+                .toList();
     }
 }

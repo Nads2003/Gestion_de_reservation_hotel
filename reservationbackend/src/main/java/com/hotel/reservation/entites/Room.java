@@ -22,6 +22,8 @@ public class Room {
     private String description;
     private double price;
     private int capacity;
+    @Column(nullable = true)
+    private int availableRooms;
 
     @ManyToOne
     @JoinColumn(name = "hotel_id")
